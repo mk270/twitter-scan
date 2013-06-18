@@ -1,0 +1,7 @@
+argparse==1.2.1
+oauth2==1.5.211
+python-twitter==0.8.2
+pytidylib==0.2.1
+webarticle2text==1.2.3
+wsgiref==0.1.2
+
