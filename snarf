@@ -44,4 +44,5 @@ def run(search_term):
             wrap_db.store_url(fu)
 
 if __name__ == '__main__':
-    run('#no2eu')
+    _, hash_tag = sys.argv
+    run(hash_tag)
