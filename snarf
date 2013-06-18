@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+
+import webarticle2text as we2t
+import urllib2
+import twitter_search
+import wrap_db
+import sys
+
+def text_of_url(url):
+    return we2t.extractFromURL(url)
+
+def final_url(starturl):
+    datagen = None
+    headers = {}
+    req = urllib2.Request(starturl, datagen, headers)
+    res = urllib2.urlopen(req)
+    final = res.geturl()
+    return final
+
+def generator_filter(gen, f):
+    for i in gen:
+        if f(i):
+            yield i
+
+# this whole thing needs to be
+# 1) a series of piped generators
+# 2) intermediatable by ampq
+
+def run(search_term):
+    srch = twitter_search.search(search_term)
+    
+    htmls = [ s.text for s in srch if "http" in s.text ]
+
+    urls = []
+    for h in set(htmls):
+        words = h.split()
+        [ urls.append(w) for w in words if w.startswith("http") ]
+
+    final_urls = set([ final_url(url) for url in set(urls) ])
+
+    for fu in final_urls:
+        if not wrap_db.url_cached(fu):
+            print fu
+            wrap_db.store_url(fu)
+
+if __name__ == '__main__':
+    run('#no2eu')
